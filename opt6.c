@@ -34,7 +34,7 @@ static double util6(double e1, double p1,
                     double e6, double p6);
 int main(void)
 {
-    int n = 5;
+    int n = 6;
     double e1 = 8,  e2 = 6, e3 = 7,  e4 = 4, e5 = 11, e6 = 8;
     double en, e_ast;
     double min_j = 100;
