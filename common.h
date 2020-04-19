@@ -3,7 +3,7 @@
 
 #define BNB   1
 #define UB    1.0
-#define ALPHA 0.02
+#define ALPHA 0.01
 #define BETA  0.01
 #define P_STRIDE 10
 #define P_MIN    P_STRIDE
