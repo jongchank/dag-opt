@@ -1,5 +1,16 @@
 #include "common.h"
 
+void timediff(struct timeval *start, struct timeval *end, long *secs, long *usecs)
+{
+    *secs = (end->tv_sec - start->tv_sec); //avoid overflow by subtracting first
+    *usecs = (end->tv_usec - start->tv_usec);
+    if (*usecs < 0) {
+        *secs -= 1;
+        *usecs = 1000000 + *usecs;
+    }
+    return; 
+}
+
 double jconv4(double p1, double p2, double p3, double p4)
 {
     return (2 * ALPHA * p4 + 2 * BETA * (p1 + p2 + p3 + p4));

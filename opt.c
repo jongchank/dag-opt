@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <string.h>
+#include <sys/time.h>
 #include "common.h"
 
 static int exh4(int n, double e1, double e2, double e3, double e4);
@@ -14,7 +15,6 @@ static int our6(int n, double e1, double e2, double e3, double e4, double e5, do
 
 int main(int argc, char *argv[])
 {
-    //double e1 = 40,  e2 = 90, e3 = 120,  e4 = 50;
     double e1, e2, e3, e4, e5, e6;
     char *cmd;
     int n;
@@ -98,6 +98,8 @@ int main(int argc, char *argv[])
 
 static int exh4(int n, double e1, double e2, double e3, double e4)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double min_j, min_j_u;
 
     double u, opt_u;
@@ -105,6 +107,7 @@ static int exh4(int n, double e1, double e2, double e3, double e4)
     int opt_p1, opt_p2, opt_p3, opt_p4;
     double j;
 
+    gettimeofday(&start, NULL);
     min_j = jconv4(P_MAX, P_MAX, P_MAX, P_MAX);
     for (p1 = P_MIN; p1 <= P_MAX; p1 += P_STRIDE) {
 #if BNB == 1
@@ -139,20 +142,26 @@ static int exh4(int n, double e1, double e2, double e3, double e4)
             }
         }
     }
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4);
+    printf("%g %g %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
 
     return 0;
 }
 
 static int our4(int n, double e1, double e2, double e3, double e4)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double en, e_ast;
     double min_j, j, u, min_j_u;
     double real_p1, real_p_ast, real_p2, real_p3, real_p4;
     int p1, p2, p3, p4;
     int p1d, p2d, p3d, p4d;
     int opt_p1, opt_p2, opt_p3, opt_p4;
+
+    gettimeofday(&start, NULL);
 
     e_ast = e2 + e3;
     en = e4;
@@ -162,8 +171,18 @@ static int our4(int n, double e1, double e2, double e3, double e4)
     real_p3 = real_p_ast * e3 / e_ast;
     real_p4 = real_p1 * sqrt(BETA * en / ((ALPHA + BETA) * e1));
 
-    printf("%g %g %g %g %g %g\n", jconv4(real_p1, real_p2, real_p3, real_p4), util4(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4), real_p1, real_p2, real_p3, real_p4);
+    gettimeofday(&end, NULL);
+    secs = (end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+    usecs = (end.tv_usec - start.tv_usec);
+    if (usecs < 0) {
+        secs -= 1;
+        usecs = 1000000 + usecs;
+    }
 
+    printf("%g %g %g %g %g %g (%ld.%06ld)\n", jconv4(real_p1, real_p2, real_p3, real_p4), util4(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4), real_p1, real_p2, real_p3, real_p4, secs, usecs);
+
+    gettimeofday(&start, NULL);
+    /*************************/
     opt_p1 = p1d = (int) real_p1 + 1;
     opt_p2 = p2d = (int) real_p2 + 1;
     opt_p3 = p3d = (int) real_p3 + 1;
@@ -187,19 +206,26 @@ static int our4(int n, double e1, double e2, double e3, double e4)
             }
         }
     }
+    /*************************/
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4);
+    printf("%g %g %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
     return 0;
 }
 
 static int exh5(int n, double e1, double e2, double e3, double e4, double e5)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double min_j, min_j_u;
 
     double u, opt_u;
     int p1, p2, p3, p4, p5;
     int opt_p1, opt_p2, opt_p3, opt_p4, opt_p5;
     double j;
+
+    gettimeofday(&start, NULL);
 
     min_j = jconv5(P_MAX, P_MAX, P_MAX, P_MAX, P_MAX);
     for (p1 = P_MIN; p1 <= P_MAX; p1 += P_STRIDE) {
@@ -244,19 +270,26 @@ static int exh5(int n, double e1, double e2, double e3, double e4, double e5)
         }
     }
 
-    printf("%g %g %d %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
 
     return 0;
 }
 
 static int our5(int n, double e1, double e2, double e3, double e4, double e5)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double en, e_ast;
     double min_j, j, u, min_j_u;
     double real_p1, real_p_ast, real_p2, real_p3, real_p4, real_p5;
     int p1, p2, p3, p4, p5;
     int p1d, p2d, p3d, p4d, p5d;
     int opt_p1, opt_p2, opt_p3, opt_p4, opt_p5;
+
+    gettimeofday(&start, NULL);
 
     e_ast = e2 + e3;
     en = e5;
@@ -267,7 +300,12 @@ static int our5(int n, double e1, double e2, double e3, double e4, double e5)
     real_p4 = real_p_ast * e4 / e_ast;
     real_p5 = real_p1 * sqrt(BETA * en / ((ALPHA + BETA) * e1));
 
-    printf("%g %g %g %g %g %g %g\n", jconv5(real_p1, real_p2, real_p3, real_p4, real_p5), util5(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5), real_p1, real_p2, real_p3, real_p4, real_p5);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %g %g %g %g %g (%ld.%06ld)\n", jconv5(real_p1, real_p2, real_p3, real_p4, real_p5), util5(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5), real_p1, real_p2, real_p3, real_p4, real_p5, secs, usecs);
+
+    gettimeofday(&start, NULL);
    
     opt_p1 = p1d = (int) real_p1 + 1;
     opt_p2 = p2d = (int) real_p2 + 1;
@@ -296,18 +334,25 @@ static int our5(int n, double e1, double e2, double e3, double e4, double e5)
         }
     }
 
-    printf("%g %g %d %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
     return 0;
 }
 
 static int exh6(int n, double e1, double e2, double e3, double e4, double e5, double e6)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double min_j, min_j_u;
 
     double u, opt_u;
     int p1, p2, p3, p4, p5, p6;
     int opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6;
     double j;
+
+    gettimeofday(&start, NULL);
 
     min_j = jconv6(P_MAX, P_MAX, P_MAX, P_MAX, P_MAX, P_MAX);
     for (p1 = P_MIN; p1 <= P_MAX; p1 += P_STRIDE) {
@@ -360,19 +405,26 @@ static int exh6(int n, double e1, double e2, double e3, double e4, double e5, do
         }
     }
 
-    printf("%g %g %d %d %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %d %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
 
     return 0;
 }
 
 static int our6(int n, double e1, double e2, double e3, double e4, double e5, double e6)
 {
+    struct timeval start, end;
+    long secs, usecs;
     double en, e_ast;
     double min_j, j, u, min_j_u;
     double real_p1, real_p_ast, real_p2, real_p3, real_p4, real_p5, real_p6;
     int p1, p2, p3, p4, p5, p6;
     int p1d, p2d, p3d, p4d, p5d, p6d;
     int opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6;
+
+    gettimeofday(&start, NULL);
 
     e_ast = e2 + e5;
     en = e6;
@@ -384,7 +436,12 @@ static int our6(int n, double e1, double e2, double e3, double e4, double e5, do
     real_p5 = real_p_ast * e5 / e_ast;
     real_p6 = real_p1 * sqrt(BETA * en / ((ALPHA + BETA) * e1));
 
-    printf("%g %g %g %g %g %g %g %g\n", jconv6(real_p1, real_p2, real_p3, real_p4, real_p5, real_p6), util6(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5, e6, real_p6), real_p1, real_p2, real_p3, real_p4, real_p5, real_p6);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %g %g %g %g %g %g (%ld.%06ld)\n", jconv6(real_p1, real_p2, real_p3, real_p4, real_p5, real_p6), util6(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5, e6, real_p6), real_p1, real_p2, real_p3, real_p4, real_p5, real_p6, secs, usecs);
+
+    gettimeofday(&start, NULL);
 
     opt_p1 = p1d = (int) real_p1 + 1;
     opt_p2 = p2d = (int) real_p2 + 1;
@@ -416,7 +473,10 @@ static int our6(int n, double e1, double e2, double e3, double e4, double e5, do
         }
     }
 
-    printf("%g %g %d %d %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6);
+    gettimeofday(&end, NULL);
+    timediff(&start, &end, &secs, &usecs);
+
+    printf("%g %g %d %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
     return 0;
 }
 

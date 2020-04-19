@@ -1,6 +1,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#include <sys/time.h>
+
 #define BNB   1
 #define UB    1.0
 #define ALPHA 0.01
@@ -9,6 +11,7 @@
 #define P_MIN    P_STRIDE
 #define P_MAX    1000
 
+void timediff(struct timeval *start, struct timeval *end, long *secs, long *usecs);
 double jconv4(double p1, double p2, double p3, double p4);
 double jconv5(double p1, double p2, double p3, double p4, double p5);
 double jconv6(double p1, double p2, double p3, double p4, double p5, double p6);
