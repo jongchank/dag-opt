@@ -3,89 +3,70 @@
 #include <stdint.h>
 #include <math.h>
 
-#define N           4       /* Number of runnables */
+#define BNB         1
+
+#define UB          (1.0)
+#define N           (5)     /* Number of runnables */
 #define ALPHA       (0.001) /* ALPHA in J */
 #define BETA        (0.001) /* BETA  in J */
 #define J(t, delta) (ALPHA * (t) + BETA * (delta))  /* Control cost function */
 
 static void print_p(int p[], int dim);
-static int compare(int a[], int b[], int n);
 static double util(double e[], int p[], int n);
 static double jconv(int p[], int n); 
 
 int main(void)
 {
     int i;
-    int *begins, *ends;
+    int *mins, *maxes;
     int p[N], opt_p[N];
     double *e;
-    double j, u, min_j;
+    double j, u, j_min, j_min_u;
 
-    begins   = (int [N])    {1,    1,    1,    1};
-    ends     = (int [N])    {100,  100,  100,  100};
-    e        = (double [N]) {4.0,  9.0,  12.0, 5.0};
+    mins  = (int [N])    {1,   1,   1,   1,   1};
+    maxes = (int [N])    {100, 100, 100, 100, 100};
+    e     = (double [N]) {12.0, 8.0, 11.0, 6.0, 10.0};
 
     for (i = 0; i < N; i++) {
-        p[i] = begins[i];
+        p[i] = mins[i];
     }
 
-    min_j = jconv(ends, N);   /* maximum possible j value */
+    j_min = jconv(maxes, N);   /* maximum possible j value */
 
     for (;;) {
+        int end_flag = 0;
+
         u = util(e, p, N);
         j = jconv(p, N);
-
-        /*
-         * check skip hack 
-         */
-        if (p[0] != 1 && p[1] == 1 && p[2] == 1 && p[3] == 1 && j > min_j)
-            break;
-
-        if (p[0] != 1 && p[1] != 1 && p[2] == 1 && p[3] == 1 && j > min_j)
-            p[0]++; p[1] = 1;
-
-        if (u <= 1.0 && j < min_j) {
-            min_j = j;
+        if (u <= UB && j < j_min) {
+            j_min = j;
+            j_min_u = u;
             for (i = 0; i < N; i++) {
                 opt_p[i] = p[i];
             }
+            print_p(opt_p, N); printf("%g %g\n", j_min, j_min_u);
         }
-
-        if (compare(p, ends, N) >= 0) {
-            break;
-        }
-        for (i = N - 1; i >= 0; i--) {
-            p[i]++; 
-            if (p[i] > ends[i]) {
-                p[i] = begins[i];
+        for (i = N - 1; i >= -1; i--) {
+            if (i == -1) {
+                end_flag = 1;
+                break;
+            }
+            p[i]++;
+            if (p[i] > maxes[i]) {
+                p[i] = mins[i];
             }
             else {
                 break;
             }
         }
+        if (end_flag) {
+            break;
+        }
     }
 
     printf("--------------------\n");
-    print_p(opt_p, N); printf(" U = %g J = %g\n", util(e, opt_p, N), jconv(opt_p, N));
+    print_p(opt_p, N); printf("%g %g\n", j_min, j_min_u);
 
-    return 0;
-}
-
-int compare(int a[], int b[], int n)
-{
-    int i;
-
-    for (i = 0; i < n; i++) {
-        if (a[i] < b[i]) {
-            return -1;
-        }
-        else if (a[i] > b[i]) {
-            return 1;
-        }
-        else {
-            ;
-        }
-    }
     return 0;
 }
 
@@ -111,13 +92,5 @@ static double util(double e[], int p[], int n)
 
 static double jconv(int p[], int n) 
 {
-    int i;
-    double t, delta = 0.0;
-
-    t = 2 * p[n - 1];
-    for (i = 0; i < n; i++) {
-        delta += 2 * p[i];
-    }
-
-    return J(t, delta);
+    return (2 * ALPHA * p[4] + 2 * BETA * (p[0] + p[1] + p[2] + p[4]));
 }
