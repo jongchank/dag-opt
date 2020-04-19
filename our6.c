@@ -9,7 +9,7 @@
 int main(void)
 {
     int n = N;
-    double e1 = 8,  e2 = 6, e3 = 7,  e4 = 4, e5 = 11, e6 = 8;
+    double e1 = 80,  e2 = 60, e3 = 70,  e4 = 40, e5 = 110, e6 = 80;
     double en, e_ast;
     double real_p1, real_p_ast, real_p2, real_p3, real_p4, real_p5, real_p6;
 

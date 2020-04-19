@@ -9,7 +9,7 @@
 int main(void)
 {
     int n = N;
-    double e1 = 12,  e2 = 8, e3 = 11,  e4 = 6, e5 = 10;
+    double e1 = 120,  e2 = 80, e3 = 110,  e4 = 60, e5 = 100;
     double min_j, min_j_u;
 
     double u, opt_u;
