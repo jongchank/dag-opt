@@ -6,16 +6,25 @@
 
 #define N 4
 
-int main(void)
+int main(int argc, char *argv[])
 {
     int n = N;
-    double e1 = 40,  e2 = 90, e3 = 120,  e4 = 50;
+    //double e1 = 40,  e2 = 90, e3 = 120,  e4 = 50;
+    double e1,  e2, e3,  e4;
     double min_j, min_j_u;
 
     double u, opt_u;
     int p1, p2, p3, p4;
     int opt_p1, opt_p2, opt_p3, opt_p4;
     double j;
+
+    if (argc != 5) {
+        return -1;
+    }
+    e1 = atof(argv[1]);
+    e2 = atof(argv[2]);
+    e3 = atof(argv[3]);
+    e4 = atof(argv[4]);
 
     min_j = jconv4(P_MAX, P_MAX, P_MAX, P_MAX);
     for (p1 = P_MIN; p1 <= P_MAX; p1 += P_STRIDE) {
@@ -52,7 +61,7 @@ int main(void)
         }
     }
 
-    printf("%d %d %d %d %g %g\n", opt_p1, opt_p2, opt_p3, opt_p4, min_j, min_j_u);
+    printf("%g %g %d %d %d %d\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4);
 
     return 0;
 }
