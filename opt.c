@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         e2 = atof(argv[4]);
         e3 = atof(argv[5]);
         e4 = atof(argv[6]);
+        printf("----------------------------------------------------------------------------------------\n");
         if (strncmp(cmd, "exh", 3) == 0) {
             exh4(n, e1, e2, e3, e4);
         } else if (strncmp(cmd, "our", 3) == 0) {
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
         e3 = atof(argv[5]);
         e4 = atof(argv[6]);
         e5 = atof(argv[7]);
-
+        printf("----------------------------------------------------------------------------------------\n");
         if (strncmp(cmd, "exh", 3) == 0) {
             exh5(n, e1, e2, e3, e4, e5);
         } else if (strncmp(cmd, "our", 3) == 0) {
@@ -77,6 +78,7 @@ int main(int argc, char *argv[])
         e4 = atof(argv[6]);
         e5 = atof(argv[7]);
         e6 = atof(argv[8]);
+        printf("----------------------------------------------------------------------------------------\n");
 
         if (strncmp(cmd, "exh", 3) == 0) {
             exh6(n, e1, e2, e3, e4, e5, e6);
@@ -145,7 +147,7 @@ static int exh4(int n, double e1, double e2, double e3, double e4)
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
+    printf("EXHAUSTIVE  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d)                 <%ld.%06ld>\n", min_j, min_j_u * 100, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
 
     return 0;
 }
@@ -172,14 +174,8 @@ static int our4(int n, double e1, double e2, double e3, double e4)
     real_p4 = real_p1 * sqrt(BETA * en / ((ALPHA + BETA) * e1));
 
     gettimeofday(&end, NULL);
-    secs = (end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
-    usecs = (end.tv_usec - start.tv_usec);
-    if (usecs < 0) {
-        secs -= 1;
-        usecs = 1000000 + usecs;
-    }
-
-    printf("%g %g %g %g %g %g (%ld.%06ld)\n", jconv4(real_p1, real_p2, real_p3, real_p4), util4(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4), real_p1, real_p2, real_p3, real_p4, secs, usecs);
+    timediff(&start, &end, &secs, &usecs);
+    printf("OURS (REAL) %-6.2f %-6.2f (%-3.2f, %-3.2f, %-3.2f, %-3.2f)                 <%ld.%06ld>\n", jconv4(real_p1, real_p2, real_p3, real_p4), util4(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4) * 100, real_p1, real_p2, real_p3, real_p4, secs, usecs);
 
     gettimeofday(&start, NULL);
     /*************************/
@@ -210,7 +206,7 @@ static int our4(int n, double e1, double e2, double e3, double e4)
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
+    printf("OURS (INT)  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d)                 <%ld.%06ld>\n", min_j, min_j_u * 100, opt_p1, opt_p2, opt_p3, opt_p4, secs, usecs);
     return 0;
 }
 
@@ -273,7 +269,7 @@ static int exh5(int n, double e1, double e2, double e3, double e4, double e5)
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
+    printf("EXHAUSTIVE  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d, %-6d)         <%ld.%06ld>\n", min_j, min_j_u * 100, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
 
     return 0;
 }
@@ -303,7 +299,7 @@ static int our5(int n, double e1, double e2, double e3, double e4, double e5)
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %g %g %g %g %g (%ld.%06ld)\n", jconv5(real_p1, real_p2, real_p3, real_p4, real_p5), util5(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5), real_p1, real_p2, real_p3, real_p4, real_p5, secs, usecs);
+    printf("OURS (REAL) %-6.2f %-6.2f (%-3.2f, %-3.2f, %-3.2f, %-3.2f, %-3.2f)         <%ld.%06ld>\n", jconv5(real_p1, real_p2, real_p3, real_p4, real_p5), util5(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5) * 100, real_p1, real_p2, real_p3, real_p4, real_p5, secs, usecs);
 
     gettimeofday(&start, NULL);
    
@@ -337,7 +333,7 @@ static int our5(int n, double e1, double e2, double e3, double e4, double e5)
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
+    printf("OURS (INT)  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d, %-6d)         <%ld.%06ld>\n", min_j, min_j_u * 100, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, secs, usecs);
     return 0;
 }
 
@@ -408,7 +404,7 @@ static int exh6(int n, double e1, double e2, double e3, double e4, double e5, do
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
+    printf("EXHAUSTIVE  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d, %-6d, %-6d) <%ld.%06ld>\n", min_j, min_j_u * 100, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
 
     return 0;
 }
@@ -439,7 +435,7 @@ static int our6(int n, double e1, double e2, double e3, double e4, double e5, do
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %g %g %g %g %g %g (%ld.%06ld)\n", jconv6(real_p1, real_p2, real_p3, real_p4, real_p5, real_p6), util6(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5, e6, real_p6), real_p1, real_p2, real_p3, real_p4, real_p5, real_p6, secs, usecs);
+    printf("OURS (REAL) %-6.2f %-6.2f (%-3.2f, %-3.2f, %-3.2f, %-3.2f, %-3.2f, %-3.2f) <%ld.%06ld>\n", jconv6(real_p1, real_p2, real_p3, real_p4, real_p5, real_p6), util6(e1, real_p1, e2, real_p2, e3, real_p3, e4, real_p4, e5, real_p5, e6, real_p6), real_p1, real_p2, real_p3, real_p4, real_p5, real_p6, secs, usecs);
 
     gettimeofday(&start, NULL);
 
@@ -476,7 +472,6 @@ static int our6(int n, double e1, double e2, double e3, double e4, double e5, do
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    printf("%g %g %d %d %d %d %d %d (%ld.%06ld)\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
+    printf("OURS (INT)  %-6.2f %-6.2f (%-6d, %-6d, %-6d, %-6d, %-6d, %-6d) <%ld.%06ld>\n", min_j, min_j_u, opt_p1, opt_p2, opt_p3, opt_p4, opt_p5, opt_p6, secs, usecs);
     return 0;
 }
-
