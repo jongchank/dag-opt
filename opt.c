@@ -4,7 +4,6 @@
 #include <math.h>
 #include <string.h>
 #include <sys/time.h>
-#include "common.h"
 
 #define N_MAX 10
 #define BNB   1
