@@ -20,6 +20,7 @@ static inline double MIN3(double a, double b, double c) { return((MIN(a, b)) < (
 
 double east(double e[], char t, int n);
 static int run_ours(double e[], char t, int n);
+static int run_ours_lmg(double e[], char t, int n);
 static int run_exhaustive(double e[], char t, int n);
 static void show_result(const char *method, double j, double u, int p[], int n, long secs, long usecs);
 static void show_resultf(const char *method, double j, double u, double p[], int n, long secs, long usecs);
@@ -215,6 +216,14 @@ double east(double e[], char t, int n)
         return MAX(e[4], e[2] + e[3]);
     case 'd':
         return MAX3(e[2] + e[3], e[2] + e[5], e[4] + e[5]);
+    case 'e':
+        return MAX(e[2], e[3]);
+    case 'f':
+        return MAX(e[2] + e[3], e[4]);
+    case 'g':
+        return MAX3(e[2], e[3], e[4]);
+    case 'h':
+        return MAX(e[2] + e[3], e[4] + e[5]);
     default:
         return 0;
     }
@@ -254,6 +263,38 @@ double jconv(int p[], double e[], char t, int n)
         else {
             return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
         }
+    case 'e':
+        if (e[2] > e[3]) {
+            return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[4]));
+        }
+        else {
+            return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[3] + p[4]));
+        }
+    case 'f':
+        if (e[2] + e[3] > e[4]) {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
+        }
+        else {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
+        }
+    case 'g':
+        if (e[2] > e[3] && e[2] > e[4]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[6]));
+        }
+        else if (e[3] > e[2] && e[3] > e[4]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[3] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[6]));
+        }
+    case 'h':
+        if (e[2] + e[3] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+        }
+
     default:
         return 0;
     }
