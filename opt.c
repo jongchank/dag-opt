@@ -234,6 +234,7 @@ double jmax(int n)
     return (2 * ALPHA * P_MAX + 2 * BETA * n * P_MAX);
 }
 
+/* should be synced with jconvf */
 double jconv(int p[], double e[], char t, int n)
 {
     switch (t) {
@@ -300,6 +301,7 @@ double jconv(int p[], double e[], char t, int n)
     }
 }
 
+/* should be synced with jconv */
 double jconvf(double p[], double e[], char t, int n)
 {
     switch (t) {
@@ -314,10 +316,10 @@ double jconvf(double p[], double e[], char t, int n)
         }
     case 'c':
         if (e[4] > e[2] + e[3]) {
-            return e[4];
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
         }
         else {
-            return (e[2] + e[3]);
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
         }
     case 'd':
         if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
@@ -329,6 +331,38 @@ double jconvf(double p[], double e[], char t, int n)
         else {
             return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
         }
+    case 'e':
+        if (e[2] > e[3]) {
+            return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[4]));
+        }
+        else {
+            return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[3] + p[4]));
+        }
+    case 'f':
+        if (e[2] + e[3] > e[4]) {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
+        }
+        else {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
+        }
+    case 'g':
+        if (e[2] > e[3] && e[2] > e[4]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[6]));
+        }
+        else if (e[3] > e[2] && e[3] > e[4]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[3] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[6]));
+        }
+    case 'h':
+        if (e[2] + e[3] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+        }
+
     default:
         return 0;
     }
