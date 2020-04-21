@@ -5,56 +5,60 @@
 #include <string.h>
 #include <sys/time.h>
 
-#define N_MAX 10
-#define BNB   1
-#define UB    1.0
-#define ALPHA 0.01
-#define BETA  0.01
+#define N_MAX    10
+#define UB       1.0
+#define ALPHA    0.01
+#define BETA     0.01
 #define P_STRIDE 10
 #define P_MIN    P_STRIDE
 #define P_MAX    1000
 
-double east(double e[], int n);
-static int exhaustive(double e[], int n);
-static int ours(double e[], int n);
-static int exhn(double e[], int n);
+static inline double MAX(double a, double b) { return((a) > (b) ? a : b); }
+static inline double MAX3(double a, double b, double c) { return((MAX(a, b)) > (c) ? MAX(a, b) : b); }
+static inline double MIN(double a, double b) { return((a) < (b) ? a : b); }
+static inline double MIN3(double a, double b, double c) { return((MIN(a, b)) < (b) ? MIN(a, b) : b); }
+
+double east(double e[], char t, int n);
+static int run_ours(double e[], char t, int n);
+static int run_exhaustive(double e[], char t, int n);
 static void show_result(const char *method, double j, double u, int p[], int n, long secs, long usecs);
-static void show_result_double(const char *method, double j, double u, double p[], int n, long secs, long usecs);
+static void show_resultf(const char *method, double j, double u, double p[], int n, long secs, long usecs);
 static void usage(const char *prog);
 static void timediff(struct timeval *start, struct timeval *end, long *secs, long *usecs);
 static double jmax(int n);
-static double jconv(int p[], int n);
-static double jconvf(double p[], int n);
+static double jconv(int p[], double e[], char t, int n);
+static double jconvf(double p[], double e[ ], char t, int n);
 static double util(int p[], double e[], int n);
 static double utilf(double p[], double e[], int n);
+
 
 int main(int argc, char *argv[])
 {
     double e[N_MAX + 1];
     char *cmd;
+    char t;
     int i, n, rc;
 
-    if (argc < 3) {
+    if (argc < 4) {
         usage(argv[0]);
         return 1;
     }
     cmd = argv[1];
-    n = atoi(argv[2]);
-    if (n + 3 != argc) {
+    t = *(char*)argv[2];
+    n = atoi(argv[3]);
+    if (n + 4 != argc) {
         usage(argv[0]);
         return 1;
     }
     for (i = 0; i < n; i++) {
-        e[i + 1] = atof(argv[i + 3]);
+        e[i + 1] = atof(argv[i + 4]);
     }
 
     if (strncmp(cmd, "exh", 3) == 0) {
-        printf("----------------------------------------------------------------------------------------\n");
-        rc = exhaustive(e, n);
+        rc = run_exhaustive(e, t, n);
     }
     else if (strncmp(cmd, "our", 3) == 0) {
-        printf("----------------------------------------------------------------------------------------\n");
-        rc = ours(e, n);
+        rc = run_ours(e, t, n);
     }
     else {
         rc = -1;
@@ -62,7 +66,7 @@ int main(int argc, char *argv[])
     return rc;
 }
 
-static int ours(double e[], const int n)
+static int run_ours(double e[], char t, const int n)
 {
     struct timeval start, end;
     long secs, usecs;
@@ -72,23 +76,23 @@ static int ours(double e[], const int n)
     int i;
 
     gettimeofday(&start, NULL);
-    e_ast = east(e, n);
+    e_ast = east(e, t, n);
 
     p[1] = e[1] + sqrt((n -2) * e[1] * e_ast) + sqrt((ALPHA + BETA) * e[1] * e[n] / BETA); 
     p_ast = p[1] * sqrt((n - 2) * e_ast / e[1]);
-    for (i = 2; i <= n-1; i++) {
+    for (i = 2; i <= n - 1; i++) {
         p[i] = p_ast * (e[i] / e_ast);
     }
     p[n] = p[1] * sqrt(BETA * e[n] / ((ALPHA + BETA) * e[1]));
     gettimeofday(&end, NULL);
     timediff(&start, &end, &secs, &usecs);
 
-    show_result_double("OURS (REAL)", jconvf(p, n), utilf(p, e, n), p, n, secs, usecs);
+    show_resultf("OURS (REAL)", jconvf(p, e, t, n), utilf(p, e, n), p, n, secs, usecs);
     
     return 0;
 }
 
-static int exhaustive(double e[], const int n)
+static int run_exhaustive(double e[], char t, const int n)
 {
     struct timeval start, end;
     long secs, usecs;
@@ -111,7 +115,7 @@ static int exhaustive(double e[], const int n)
         if (u > UB) {
             goto loop;
         }
-        j = jconv(p, n);
+        j = jconv(p, e, t, n);
         if (j < min_j) {
             min_j = j;
             min_j_u = u;
@@ -161,7 +165,7 @@ static void show_result(const char *method, double j, double u, int p[], int n, 
     return;
 }
 
-static void show_result_double(const char *method, double j, double u, double p[], int n, long secs, long usecs) 
+static void show_resultf(const char *method, double j, double u, double p[], int n, long secs, long usecs) 
 {
     int i;
 
@@ -200,15 +204,17 @@ void timediff(struct timeval *start, struct timeval *end, long *secs, long *usec
 }
 
 
-double east(double e[], int n)
+double east(double e[], char t, int n)
 {
-    switch (n) {
-    case 4:
+    switch (t) {
+    case 'a':
         return e[2] + e[3];
-    case 5:
-        return e[2] + e[3];
-    case 6:
-        return e[2] + e[5];
+    case 'b':
+        return MAX(e[2] + e[3], e[2] + e[4]);
+    case 'c':
+        return MAX(e[4], e[2] + e[3]);
+    case 'd':
+        return MAX3(e[2] + e[3], e[2] + e[5], e[4] + e[5]);
     default:
         return 0;
     }
@@ -219,29 +225,69 @@ double jmax(int n)
     return (2 * ALPHA * P_MAX + 2 * BETA * n * P_MAX);
 }
 
-double jconv(int p[], int n)
+double jconv(int p[], double e[], char t, int n)
 {
-    switch (n) {
-    case 4:
+    switch (t) {
+    case 'a':
         return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[3] + p[4]));
-    case 5:
-        return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
-    case 6:
-        return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
+    case 'b':
+        if (e[2] + e[3] > e[2] + e[4]) {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
+        }
+        else {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
+        }
+    case 'c':
+        if (e[4] > e[2] + e[3]) {
+            return e[4];
+        }
+        else {
+            return (e[2] + e[3]);
+        }
+    case 'd':
+        if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
+        }
+        else if (e[2] + e[5] > e[2] + e[3] && e[2] + e[5] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+        }
     default:
         return 0;
     }
 }
 
-double jconvf(double p[], int n)
+double jconvf(double p[], double e[], char t, int n)
 {
-    switch (n) {
-    case 4:
+    switch (t) {
+    case 'a':
         return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[3] + p[4]));
-    case 5:
-        return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
-    case 6:
-        return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
+    case 'b':
+        if (e[2] + e[3] > e[2] + e[4]) {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
+        }
+        else {
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
+        }
+    case 'c':
+        if (e[4] > e[2] + e[3]) {
+            return e[4];
+        }
+        else {
+            return (e[2] + e[3]);
+        }
+    case 'd':
+        if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
+        }
+        else if (e[2] + e[5] > e[2] + e[3] && e[2] + e[5] > e[4] + e[5]) {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
+        }
+        else {
+            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+        }
     default:
         return 0;
     }
@@ -298,3 +344,4 @@ double util(int p[], double e[], int n)
     }
     /* unreachable */
 }
+
