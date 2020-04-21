@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
         usage(argv[0]);
         return 1;
     }
-    for (i = 0; i < n; i++) {
-        e[i + 1] = atof(argv[i + 4]);
+    for (i = 1; i <= n; i++) {
+        e[i] = atof(argv[i + 3]);
     }
 
     if (strncmp(cmd, "exh", 3) == 0) {
@@ -239,10 +239,10 @@ double jconv(int p[], double e[], char t, int n)
         }
     case 'c':
         if (e[4] > e[2] + e[3]) {
-            return e[4];
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
         }
         else {
-            return (e[2] + e[3]);
+            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
         }
     case 'd':
         if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
