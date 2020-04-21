@@ -13,10 +13,8 @@
 #define P_MIN    P_STRIDE
 #define P_MAX    1000
 
-static inline double MAX(double a, double b) { return((a) > (b) ? a : b); }
-static inline double MAX3(double a, double b, double c) { return((MAX(a, b)) > (c) ? MAX(a, b) : b); }
-static inline double MIN(double a, double b) { return((a) < (b) ? a : b); }
-static inline double MIN3(double a, double b, double c) { return((MIN(a, b)) < (b) ? MIN(a, b) : b); }
+#define MAX2(a, b) ((a) > (b) ? (a) : (b))
+#define MAX3(a, b, c) (MAX2(MAX2((a), (b)), (c)))
 
 double east(double e[], char t, int n);
 static int run_ours(double e[], char t, int n);
@@ -211,19 +209,19 @@ double east(double e[], char t, int n)
     case 'a':
         return e[2] + e[3];
     case 'b':
-        return MAX(e[2] + e[3], e[2] + e[4]);
+        return MAX2(e[2] + e[3], e[2] + e[4]);
     case 'c':
-        return MAX(e[4], e[2] + e[3]);
+        return MAX2(e[4], e[2] + e[3]);
     case 'd':
         return MAX3(e[2] + e[3], e[2] + e[5], e[4] + e[5]);
     case 'e':
-        return MAX(e[2], e[3]);
+        return MAX2(e[2], e[3]);
     case 'f':
-        return MAX(e[2] + e[3], e[4]);
+        return MAX2(e[2] + e[3], e[4]);
     case 'g':
         return MAX3(e[2], e[3], e[4]);
     case 'h':
-        return MAX(e[2] + e[3], e[4] + e[5]);
+        return MAX2(e[2] + e[3], e[4] + e[5]);
     default:
         return 0;
     }
