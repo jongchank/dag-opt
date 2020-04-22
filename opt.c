@@ -239,29 +239,15 @@ double jconv(int p[], double e[], char t, int n)
     case 'a':
         return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[3] + p[4]));
     case 'b':
-        if (e[2] + e[3] > e[2] + e[4]) {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
-        }
-        else {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
-        }
+        return MAX2(2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]),
+                    2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
     case 'c':
-        if (e[4] > e[2] + e[3]) {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
-        }
-        else {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
-        }
+            return MAX2(2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]),
+                        2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
     case 'd':
-        if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
-        }
-        else if (e[2] + e[5] > e[2] + e[3] && e[2] + e[5] > e[4] + e[5]) {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
-        }
-        else {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
-        }
+            return MAX3(2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]),
+                        2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]),
+                        2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
     case 'e':
         if (e[2] > e[3]) {
             return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[4]));
@@ -306,29 +292,16 @@ double jconvf(double p[], double e[], char t, int n)
     case 'a':
         return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[3] + p[4]));
     case 'b':
-        if (e[2] + e[3] > e[2] + e[4]) {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]));
-        }
-        else {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
-        }
+        return MAX2(2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[3] + p[5]),
+                    2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[2] + p[4] + p[5]));
     case 'c':
-        if (e[4] > e[2] + e[3]) {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]));
-        }
-        else {
-            return (2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
-        }
+            return MAX2(2 * ALPHA * p[5] + 2 * BETA * (p[1] + p[4] + p[5]),
+                        2 * ALPHA * p[5] + 2 * BETA * (p[1] + + p[2] + p[3] + p[5]));
     case 'd':
-        if (e[2] + e[3] > e[2] + e[5] && e[2] + e[3] > e[4] + e[5]) {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]));
-        }
-        else if (e[2] + e[5] > e[2] + e[3] && e[2] + e[5] > e[4] + e[5]) {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]));
-        }
-        else {
-            return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
-        }
+            return MAX3(2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]),
+                        2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]),
+                        2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+#if 0
     case 'e':
         if (e[2] > e[3]) {
             return (2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[4]));
@@ -360,7 +333,7 @@ double jconvf(double p[], double e[], char t, int n)
         else {
             return (2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
         }
-
+#endif
     default:
         return 0;
     }
