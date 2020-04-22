@@ -13,8 +13,10 @@
 #define P_MIN    P_STRIDE
 #define P_MAX    1000.0
 
-#define MAX2(a, b) ((a) > (b) ? (a) : (b))
-#define MAX3(a, b, c) (MAX2(MAX2((a), (b)), (c)))
+#define MAX2(a, b)          ((a) > (b) ? (a) : (b))
+#define MAX3(a, b, c)       (MAX2(MAX2((a), (b)), (c)))
+#define MAX4(a, b, c, d)    (MAX2(MAX2(MAX2((a), (b)), (c)), (d)))
+#define MAX5(a, b, c, d, e) (MAX2(MAX2(MAX2(MAX2((a), (b)), (c)), (d)), (e)))
 
 static int run_ours(double e[], char t, int n);
 static int run_exhaustive(double e[], char t, int n);
