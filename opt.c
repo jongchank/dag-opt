@@ -18,12 +18,12 @@
 
 static int run_ours(double e[], char t, int n);
 static int run_exhaustive(double e[], char t, int n);
-static void show_result(const char *method, double j, double u, double p[], int n, long secs, long usecs);
-static void timediff(struct timeval *start, struct timeval *end, long *secs, long *usecs);
 static double east(double e[], char t, int n);
-static double jmax(int n);
 static double jconv(double p[], double e[], char t, int n);
 static double util(double p[], double e[], int n);
+static void show_result(const char *method, double j, double u, double p[], int n, long secs, long usecs);
+static double jmax(int n);
+static void timediff(struct timeval *start, struct timeval *end, long *secs, long *usecs);
 static void usage(const char *prog);
 
 int main(int argc, char *argv[])
