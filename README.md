@@ -5,4 +5,10 @@ To build
 $ cmake .
 $ make
 ```
-Executable files opt4, opt5, opt6 are for four runnable DAGs, five runnable DAGs, and six runnable DAGs, respectively. Executable sopt is a universal optimizer for general DAGs with arbitrary number of runnables. Note sopt is much slower than the original optN programs.
+Usage
+```                                                                 
+usage: ./opt algorithm dag e1 e2 ... en                                                                                         
+  algorithm: [exh|our]                                                                                                         
+  dag: DAG type [a|b|c|d]                                                                                                       
+  e1 e2 ... en: execution times for each runnable
+```
