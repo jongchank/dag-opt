@@ -13,6 +13,8 @@
 #define P_MIN    P_STRIDE
 #define P_MAX    1000.0
 
+#define SHOW_TIMING   0
+
 #define MAX2(a, b)          ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c)       (MAX2(MAX2((a), (b)), (c)))
 #define MAX4(a, b, c, d)    (MAX2(MAX2(MAX2((a), (b)), (c)), (d)))
@@ -20,6 +22,7 @@
 
 static int run_ours(double e[], char t, int n);
 static int run_exhaustive(double e[], char t, int n);
+static int get_n(char t);
 static double east(double e[], char t, int n);
 static double jconv(double p[], double e[], char t, int n);
 static double util(double p[], double e[], int n);
@@ -35,19 +38,31 @@ int main(int argc, char *argv[])
     char t;
     int i, n, rc;
 
-    if (argc < 4) {
+    if (argc < 3) {
+        fprintf(stderr, "Algorithm and DAG type are mandatory\n");
         usage(argv[0]);
         return 1;
     }
     cmd = argv[1];
+    if (strlen(argv[2]) != 1) {
+        fprintf(stderr, "Invalid DAG type: %s\n", argv[1]);
+        usage(argv[0]);
+        return 1;
+    }
     t = *(char*)argv[2];
-    n = atoi(argv[3]);
-    if (n + 4 != argc) {
+    n = get_n(t);
+    if (n < 0) {
+        fprintf(stderr, "Invalid DAG type: %c\n", t);
+        usage(argv[0]);
+        return 1;
+    }
+    if (n + 3 != argc) {
+        fprintf(stderr, "Not enough arguments\n");
         usage(argv[0]);
         return 1;
     }
     for (i = 1; i <= n; i++) {
-        e[i] = atof(argv[i + 3]);
+        e[i] = atof(argv[i + 2]);
     }
 
     if (strncmp(cmd, "exh", 3) == 0) {
@@ -57,7 +72,7 @@ int main(int argc, char *argv[])
         rc = run_ours(e, t, n);
     }
     else {
-        rc = -1;
+        fprintf(stderr, "Invalid command: %s\n", cmd);
     }
     return rc;
 }
@@ -143,6 +158,22 @@ loop:
     return 0;
 }
 
+static int get_n(char t)
+{
+    switch (t) {
+    case 'a':
+        return 4;
+    case 'b':
+        return 5;
+    case 'c':
+        return 5;
+    case 'd':
+        return 6;
+    default:
+        return -1;
+    }
+}
+
 static double east(double e[], char t, int n)
 {
     switch (t) {
@@ -222,11 +253,14 @@ static void show_result(const char *method, double j, double u, double p[], int 
             printf("%-3.2f, ", p[i]);
         }
         else {
-            printf("%-3.2f) ", p[i]);
+            printf("%-3.2f)", p[i]);
         }
     }
-    printf("<%ld.%06ld>\n", secs, usecs);
-
+#if SHOW_TIMING == 1 
+    printf(" <%ld.%06ld>\n", secs, usecs);
+#else
+    printf("\n");
+#endif
     return;
 }
 
@@ -248,9 +282,9 @@ static void timediff(struct timeval *start, struct timeval *end, long *secs, lon
 
 static void usage(const char *prog)
 {
-    fprintf(stderr, "usage: %s cmd n e1 e2 ... en\n", prog);
-    fprintf(stderr, "  cmd: [exh|our|both]\n");
-    fprintf(stderr, "  n: number of runnables. n should be >= 4\n");
+    fprintf(stderr, "usage: %s algorithm dag e1 e2 ... en\n", prog);
+    fprintf(stderr, "  algorithm: [exh|our]\n");
+    fprintf(stderr, "  dag: DAG type [a|b|c|d]\n");
     fprintf(stderr, "  e1 e2 ... en: execution times for each runnable\n");
     return;
 }
