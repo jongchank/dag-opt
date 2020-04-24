@@ -153,6 +153,12 @@ static int parse_options(int argc, char *argv[], int *cmd, int *dag_type, double
     else if (strcmp(argv[optind], "d") == 0 || strcmp(argv[optind], "D") == 0) {
         *dag_type = D;
     }
+    else if (strcmp(argv[optind], "e") == 0 || strcmp(argv[optind], "E") == 0) {
+        *dag_type = E;
+    }
+    else if (strcmp(argv[optind], "f") == 0 || strcmp(argv[optind], "f") == 0) {
+        *dag_type = F;
+    }
     else {
         fprintf(stderr, "Invalid DAG type: %s\n", argv[optind]);
         usage(argv[0]);
@@ -286,6 +292,10 @@ static int get_n(int dag_type)
         return 5;
     case D:
         return 6;
+    case E:
+	return 4;
+    case F:
+	return 6;
     default:
         return -1;
     }
@@ -302,6 +312,10 @@ static double east(int dag_type, double e[])
         return MAX2(e[4], e[2] + e[3]);
     case D:
         return MAX3(e[2] + e[3], e[2] + e[5], e[4] + e[5]);
+    case E:
+	return MAX2(e[2], e[3]);
+    case F:
+	return MAX3(e[2] + e[3], e[3] + e[4], e[4] + e[5]);
     default:
         return 0;
     }
@@ -321,6 +335,13 @@ static double jconv(int dag_type, double p[], double e[])
     case D:
         return MAX3(2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]),
                     2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]),
+                    2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
+    case E:
+	return MAX2(2 * ALPHA * P[4] + 2 * BETA * (P[1] + P[2] + P[4]),
+		    2 * ALPHA * P[4] + 2 * BETA * (P[1] + P[3] + P[4]));	
+    case F:
+        return MAX3(2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]),
+                    2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[3] + p[4] + p[6]),
                     2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
     default:
         return 0;
