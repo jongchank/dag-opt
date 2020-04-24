@@ -337,8 +337,8 @@ static double jconv(int dag_type, double p[], double e[])
                     2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[5] + p[6]),
                     2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[4] + p[5] + p[6]));
     case E:
-	return MAX2(2 * ALPHA * P[4] + 2 * BETA * (P[1] + P[2] + P[4]),
-		    2 * ALPHA * P[4] + 2 * BETA * (P[1] + P[3] + P[4]));	
+	return MAX2(2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[2] + p[4]),
+		    2 * ALPHA * p[4] + 2 * BETA * (p[1] + p[3] + p[4]));	
     case F:
         return MAX3(2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[2] + p[3] + p[6]),
                     2 * ALPHA * p[6] + 2 * BETA * (p[1] + p[3] + p[4] + p[6]),

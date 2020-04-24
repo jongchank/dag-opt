@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kuuve/dag-opt/opt.c
+stdio.h
+-
+stdlib.h
+-
+stdint.h
+-
+unistd.h
+-
+math.h
+-
+string.h
+-
+sys/time.h
+-
+
