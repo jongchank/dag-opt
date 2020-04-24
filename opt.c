@@ -102,22 +102,22 @@ static int parse_options(int argc, char *argv[], int *cmd, int *dag_type, double
                 o->timing = 1;
                 break;
             case 'm':
-                o->p_min = atol(optarg);
+                o->p_min = atof(optarg);
                 break;
             case 'M':
-                o->p_max = atol(optarg);
+                o->p_max = atof(optarg);
                 break;
             case 's':
-                o->p_step = atol(optarg);
+                o->p_step = atof(optarg);
                 break;
             case 'a':
-                o->alpha = atol(optarg);
+                o->alpha = atof(optarg);
                 break;
             case 'b':
-                o->beta = atol(optarg);
+                o->beta = atof(optarg);
                 break;
             case 'u':
-                o->ub = atol(optarg);
+                o->ub = atof(optarg);
                 break;
             default:
                 usage(argv[0]);
@@ -392,9 +392,16 @@ static void timediff(struct timeval *start, struct timeval *end, long *secs, lon
 
 static void usage(const char *prog)
 {
-    fprintf(stderr, "usage: %s algorithm dag e1 e2 ... en\n", prog);
-    fprintf(stderr, "  algorithm: [exh|our]\n");
-    fprintf(stderr, "  dag: DAG type [a|b|c|d]\n");
-    fprintf(stderr, "  e1 e2 ... en: execution times for each runnable\n");
+    fprintf(stderr, "usage: %s [OPTIONS] algorithm dag e1 e2 ... en\n", prog);
+    fprintf(stderr, "       -t: show timing information\n");
+    fprintf(stderr, "       -m <minimum period>\n");
+    fprintf(stderr, "       -M <maximum period>\n");
+    fprintf(stderr, "       -s <period step>\n");
+    fprintf(stderr, "       -a <alpha>\n");
+    fprintf(stderr, "       -b <beta>\n");
+    fprintf(stderr, "       -u <utilization bound>\n");
+    fprintf(stderr, "       algorithm: [exh|our]\n");
+    fprintf(stderr, "       dag: DAG type [a|b|c|d]\n");
+    fprintf(stderr, "       e1 e2 ... en: execution times for each runnable\n");
     return;
 }
